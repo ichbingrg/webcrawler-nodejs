@@ -1,0 +1,23 @@
+{
+	"name": "webcrawler-nodejs",
+	"version": "1.0.0",
+	"description": "project to learn how to make a crawler in nodejs",
+	"main": "main.js",
+	"scripts": {
+		"start": "node main.js",
+		"test": "jest"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/ichbingrg/webcrawler-nodejs.git"
+	},
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/ichbingrg/webcrawler-nodejs/issues"
+	},
+	"homepage": "https://github.com/ichbingrg/webcrawler-nodejs#readme",
+	"devDependencies": {
+		"jest": "^29.6.1"
+	}
+}
