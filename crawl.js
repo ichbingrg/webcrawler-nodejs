@@ -59,11 +59,12 @@ const getURLsFromHTML = (htmlBody, baseURL) =>{
     const linkElements = dom.window.document.querySelectorAll('a')
 
     for (const linkElement of linkElements) {
-        if(linkElement.href.slice(0,1)==="/") {
+        const linkHref = linkElement.href
+        if(linkHref.slice(0,1)==="/" || linkHref.slice(0,1)==="#") {
             // relative urls
             try{
                 // check if it is a valid url
-                const urlObj = new URL(`${baseURL}${linkElement.href}`)
+                const urlObj = new URL(`${baseURL}${linkHref}`)
                 // this will throw an error if the url is not valid
                 urls.push(urlObj.href)
                 
@@ -75,10 +76,10 @@ const getURLsFromHTML = (htmlBody, baseURL) =>{
             //absolute urls
             try{
                 // check if it is a valid url
-                const urlObj = new URL(linkElement.href)
+                const urlObj = new URL(linkHref)
                 // this will throw an error if the url is not valid
                 urls.push(urlObj.href)
-
+                
             }catch (e){
                 console.log("Error with absolute url : " + e.message)
             }
