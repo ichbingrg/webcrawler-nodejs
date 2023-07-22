@@ -1,9 +1,26 @@
 const {JSDOM} = require('jsdom');
 
-const crawlPage = async (currentURL) =>  {
-    console.log(`actively crawling ${currentURL}`)
-        
+const crawlPage = async (baseURL, currentURL, pages) => {
     
+    const baseURLObj = new URL(baseURL)
+    const currentURLObj = new URL(currentURL)
+    
+    // if the two urls are not on the same host then, return the list of pages and don't work further
+    if (baseURLObj.hostname !== currentURLObj.hostname) {
+        return pages
+    }
+
+    //check if the page is already crawled
+    const normalizedCurrentURL = normalizeURL(currentURL)
+    if (pages[normalizedCurrentURL]>0){
+        pages[normalizedCurrentURL]++;
+        return pages;
+    }
+
+    pages[normalizedCurrentURL] = 1 ;
+    
+    console.log(`actively crawling ${currentURL}`)
+
     // if user gives bad link
     try{
         const resp = await fetch(currentURL)
@@ -11,21 +28,28 @@ const crawlPage = async (currentURL) =>  {
         // check for status 200
         if(resp.status > 399){
             console.log(`error in fetch with status code: ${resp.status} on page: ${currentURL}`)
-            return
+            return pages
         }
         
         // make sure the response is html
         const contentType = resp.headers.get("content-type")
         if(!contentType.includes("text/html")){
             console.log(`error in fetch with non html response, content type : ${contentType} on page: ${currentURL}`)
-            return
+            return pages
         }
 
-        console.log(await resp.text())
+        const htmlBody = await resp.text()
+
+        const nextURLs = getURLsFromHTML(htmlBody, baseURL)
+
+        for (const nextURL of nextURLs) {
+            pages = await crawlPage(baseURL, nextURL, pages)
+        }
     }catch(e){
         console.log(`Error in fetch : ${e.message}, on page : ${currentURL}`);
     }
 
+    return pages
 }
 
 
